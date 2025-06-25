@@ -698,98 +698,98 @@ def internet_app(transmitter: User, receiver: User):
 #         return self._alive
 
 # def ecosystem(river_length: int):
-    river = [None] * river_length
-    number_of_animals = 0
-    num_of_fishes = 0
-    num_of_bears = 0
-    animals = set()
-    # run = True
+    # river = [None] * river_length
+    # number_of_animals = 0
+    # num_of_fishes = 0
+    # num_of_bears = 0
+    # animals = set()
+    # # run = True
 
-    for slot in range(river_length):
-        possible_option = randint(1, 5)
+    # for slot in range(river_length):
+    #     possible_option = randint(1, 5)
 
-        if possible_option == 1:
-            river[slot] = Bear(slot)
-            animals.add(river[slot])
-            number_of_animals += 1
-            num_of_bears += 1
+    #     if possible_option == 1:
+    #         river[slot] = Bear(slot)
+    #         animals.add(river[slot])
+    #         number_of_animals += 1
+    #         num_of_bears += 1
 
-        elif possible_option == 2:
-            river[slot] = Fish(slot)
-            animals.add(river[slot])
-            number_of_animals += 1
-            num_of_fishes += 1
+    #     elif possible_option == 2:
+    #         river[slot] = Fish(slot)
+    #         animals.add(river[slot])
+    #         number_of_animals += 1
+    #         num_of_fishes += 1
 
-    print(f'{river}\nNumber of animals {number_of_animals}\n')
+    # print(f'{river}\nNumber of animals {number_of_animals}\n')
 
-    while  number_of_animals > 1 and number_of_animals < river_length:
-        for animal in animals.copy():
-            step = randint(-1, 1)
-            if step:
-                last_pos = animal.get_pos()
-                animal.move(step)
-            else:
-                continue
+    # while  number_of_animals > 1 and number_of_animals < river_length:
+    #     for animal in animals.copy():
+    #         step = randint(-1, 1)
+    #         if step:
+    #             last_pos = animal.get_pos()
+    #             animal.move(step)
+    #         else:
+    #             continue
 
-            if animal.get_pos() == river_length or animal.get_pos() < 0:
-                animal.move(-step)
-                continue
+    #         if animal.get_pos() == river_length or animal.get_pos() < 0:
+    #             animal.move(-step)
+    #             continue
 
-            if isinstance(animal, Fish) and animal.is_alive():
-                if isinstance(river[animal.get_pos()], Fish):
-                    animal.move(-step)
+    #         if isinstance(animal, Fish) and animal.is_alive():
+    #             if isinstance(river[animal.get_pos()], Fish):
+    #                 animal.move(-step)
 
-                    while True:
-                        i = randint(0, river_length - 1)
-                        if not river[i]:
-                            break
+    #                 while True:
+    #                     i = randint(0, river_length - 1)
+    #                     if not river[i]:
+    #                         break
 
-                    river[i] = Fish(i)
-                    animals.add(river[i])
-                    number_of_animals += 1
-                    num_of_fishes += 1
-                    print(f"A fish was born from {animal.get_pos()}")
+    #                 river[i] = Fish(i)
+    #                 animals.add(river[i])
+    #                 number_of_animals += 1
+    #                 num_of_fishes += 1
+    #                 print(f"A fish was born from {animal.get_pos()}")
 
-                elif isinstance(river[animal.get_pos()], Bear):
-                    print("A fish jumped into a bear's mouth")
-                    river[last_pos] = None
-                    animals.remove(animal)
-                    number_of_animals -= 1
-                    num_of_fishes -= 1
+    #             elif isinstance(river[animal.get_pos()], Bear):
+    #                 print("A fish jumped into a bear's mouth")
+    #                 river[last_pos] = None
+    #                 animals.remove(animal)
+    #                 number_of_animals -= 1
+    #                 num_of_fishes -= 1
 
-                else:
-                    river[last_pos], river[animal.get_pos()] = river[animal.get_pos()], river[last_pos]
+    #             else:
+    #                 river[last_pos], river[animal.get_pos()] = river[animal.get_pos()], river[last_pos]
 
-            elif isinstance(animal, Bear):
-                if isinstance(river[animal.get_pos()], Fish):
-                    print("A bear chased a fish")
-                    animals.remove(river[animal.get_pos()])
-                    river[animal.get_pos()] = river[animal.get_pos()].die()
-                    river[last_pos], river[animal.get_pos()] = river[animal.get_pos()], river[last_pos]
-                    number_of_animals -= 1
-                    num_of_fishes -= 1                
+    #         elif isinstance(animal, Bear):
+    #             if isinstance(river[animal.get_pos()], Fish):
+    #                 print("A bear chased a fish")
+    #                 animals.remove(river[animal.get_pos()])
+    #                 river[animal.get_pos()] = river[animal.get_pos()].die()
+    #                 river[last_pos], river[animal.get_pos()] = river[animal.get_pos()], river[last_pos]
+    #                 number_of_animals -= 1
+    #                 num_of_fishes -= 1                
                 
-                elif isinstance(river[animal.get_pos()], Bear):
-                    animal.move(-step)
+    #             elif isinstance(river[animal.get_pos()], Bear):
+    #                 animal.move(-step)
 
-                    while True:
-                        i = randint(0, river_length - 1)
-                        if not river[i]:
-                            break
+    #                 while True:
+    #                     i = randint(0, river_length - 1)
+    #                     if not river[i]:
+    #                         break
 
-                    river[i] = Bear(i)
-                    animals.add(river[i])
-                    number_of_animals += 1
-                    num_of_bears += 1
-                    print(f"A bear was born from {animal.get_pos()}")
+    #                 river[i] = Bear(i)
+    #                 animals.add(river[i])
+    #                 number_of_animals += 1
+    #                 num_of_bears += 1
+    #                 print(f"A bear was born from {animal.get_pos()}")
                 
-                else:
-                    river[last_pos], river[animal.get_pos()] = river[animal.get_pos()], river[last_pos]
+    #             else:
+    #                 river[last_pos], river[animal.get_pos()] = river[animal.get_pos()], river[last_pos]
 
-            if number_of_animals <= 1 or number_of_animals >= river_length:
-                break
+    #         if number_of_animals <= 1 or number_of_animals >= river_length:
+    #             break
 
-        print(f'{river}\nNumber of animals {number_of_animals}\n')
+    #     print(f'{river}\nNumber of animals {number_of_animals}\n')
 
 #     print(f'This is the ecosystem at the end:')
 #     print(river)
@@ -798,7 +798,7 @@ def internet_app(transmitter: User, receiver: User):
 #     print(f"Number of bears {num_of_bears}")
 
 
-# R-2.36, R-2.37
+# R-2.37
 class Animal:
     def __init__(self, position):
         self._sex = choice(['M','F'])
