@@ -1,14 +1,12 @@
 from abc import ABCMeta, abstractmethod
 from time import localtime, monotonic
-from random import randint
+from random import randint, choice, uniform
 
 """ R-2.1 Three life-critical software applications could be bank apps, text messages apps and search engines apps.
     R-2.2 Some software apps like Amazon or AliExpress could have a lot o losses if their software apps don't achieve adaptability.
     R-2.3 I'll describe the text area component where I think it could encapsulate methods like GetText or SetAlign. """
 
 # R-2.4
-
-
 class Flower:
     def __init__(self, name='Sunflower', num_petals=23, price=3.0) -> None:
         self._name = name
@@ -658,48 +656,48 @@ def internet_app(transmitter: User, receiver: User):
 
 
 # R-2.36
-class Bear:
-    def __init__(self, position):
-        self._pos = position
+# class Bear:
+#     def __init__(self, position):
+#         self._pos = position
 
-    def __str__(self):
-        return "ฅ՞•ﻌ•՞ฅ"
+#     def __str__(self):
+#         return "ฅ՞•ﻌ•՞ฅ"
 
-    def __repr__(self):
-        return "ฅ՞•ﻌ•՞ฅ"
+#     def __repr__(self):
+#         return "ฅ՞•ﻌ•՞ฅ"
 
-    def move(self, step):
-        self._pos += step
-        return step
+#     def move(self, step):
+#         self._pos += step
+#         return step
 
-    def get_pos(self):
-        return self._pos
+#     def get_pos(self):
+#         return self._pos
 
-class Fish:
-    def __init__(self, position):
-        self._pos = position
-        self._alive = True
+# class Fish:
+#     def __init__(self, position):
+#         self._pos = position
+#         self._alive = True
 
-    def __str__(self):
-        return ">(  °)"
+#     def __str__(self):
+#         return ">(  °)"
 
-    def __repr__(self):
-        return ">(  °)"
+#     def __repr__(self):
+#         return ">(  °)"
 
-    def move(self, step):
-        self._pos += step
-        return step
+#     def move(self, step):
+#         self._pos += step
+#         return step
 
-    def get_pos(self):
-        return self._pos
+#     def get_pos(self):
+#         return self._pos
     
-    def die(self):
-        self._alive = False
+#     def die(self):
+#         self._alive = False
 
-    def is_alive(self):
-        return self._alive
+#     def is_alive(self):
+#         return self._alive
 
-def ecosystem(river_length: int):
+# def ecosystem(river_length: int):
     river = [None] * river_length
     number_of_animals = 0
     num_of_fishes = 0
@@ -793,15 +791,178 @@ def ecosystem(river_length: int):
 
         print(f'{river}\nNumber of animals {number_of_animals}\n')
 
-    print(f'This is the ecosystem at the end:')
+#     print(f'This is the ecosystem at the end:')
+#     print(river)
+#     print(f"Number of animals {number_of_animals}")
+#     print(f"Number of fishes {num_of_fishes}")
+#     print(f"Number of bears {num_of_bears}")
+
+
+# R-2.36, R-2.37
+class Animal:
+    def __init__(self, position):
+        self._sex = choice(['M','F'])
+        self._strength = format(uniform(100, 300), '.2f')
+        self._pos = position
+        self._alive = True
+
+    def move(self, step):
+        self._pos += step
+        return step
+    
+    def is_alive(self):
+        return self._alive
+    
+    def die(self):
+        self._alive = False
+
+    def get_pos(self):
+        return self._pos
+    
+    def get_sex(self):
+        return self._sex
+    
+    def get_strength(self):
+        return self._strength
+
+class Bear(Animal):
+    def __init__(self, position):
+        super().__init__(position)
+
+    def __repr__(self):
+        return "ฅ՞•ﻌ•՞ฅ"
+    
+class Fish(Animal):
+    def __init__(self, position):
+        super().__init__(position)
+    
+    def __repr__(self):
+        return ">(  °)"
+
+def ecosystem(river_length):
+    river = []
+    animals = set()
+    free_slots = set()
+
+    for pos in range(river_length):
+        entity = choice([Bear(pos), Fish(pos), None])
+        river.append(entity)
+
+        if isinstance(entity, Bear):
+            animals.add(entity)
+
+        elif isinstance(entity, Fish):
+            animals.add(entity)
+        
+        else:
+            free_slots.add(pos)
+
+    iterator = iter(animals.copy())
+
+    while 1 < len(animals) < river_length:
+        print(river)
+        print(animals)
+        print(f"Number of animals: {len(animals)}")
+        print('\n')
+
+        try:
+            animal = next(iterator)
+        except StopIteration:
+            iterator = iter(animals.copy())
+            animal = next(iterator)
+
+        if not animal.is_alive():
+            print(f"The ghost goes bOo0oO0o")
+            continue
+        
+        current = animal.get_pos()
+        step = animal.move(randint(-1,1))
+
+        if step != 0:
+            target = animal.get_pos()
+            
+        else:
+            print(f"The animal {current} kept its place")
+            continue
+
+
+        if not 0 <= target < river_length :
+            animal.move(-step)
+            print(f"The animal {current} kept its place")
+            continue
+
+        print(f"Current: {current} Target: {target}")
+
+
+        if river[target] and river[target].is_alive():
+            other_animal = river[target]
+
+        else:
+            river[current], river[target] = None, animal
+
+            free_slots.remove(target)
+            free_slots.add(current)
+            print(f"The animal {current} moved to {target}")
+            continue
+
+
+        if type(animal) == type(other_animal):
+            if animal.get_sex() != other_animal.get_sex():
+                animal.move(-step)
+
+                type_of_animal = type(animal)
+                target = free_slots.pop()
+                new_born_animal = type_of_animal(target)
+                
+                river[target] = new_born_animal
+
+                animals.add(new_born_animal)
+
+                print("An animal was born")
+                continue
+
+
+            if animal.get_strength() > other_animal.get_strength():
+                river[current], river[target] = None, animal
+                other_animal.die()
+
+                free_slots.add(current)
+                animals.remove(other_animal)
+                print(f"The animal {current} killed the animal {other_animal.get_pos()}")
+            
+            else:
+                river[current] = None
+                animal.die()
+
+                free_slots.add(current)
+                animals.remove(animal)
+                print(f"The animal {other_animal.get_pos()} killed the animal {current}")
+
+        elif type(animal) != type(other_animal):
+            if isinstance(other_animal, Bear):
+                river[current] = None
+                animal.die()
+
+                free_slots.add(current)
+                animals.remove(animal)
+                print("A fish jumped into a bear's mouth")
+
+            else:
+                river[current], river[target] = None, animal
+                other_animal.die()
+
+                free_slots.add(current)
+                animals.remove(other_animal)
+                print("A bear chased a fish")
+    
     print(river)
-    print(f"Number of animals {number_of_animals}")
-    print(f"Number of fishes {num_of_fishes}")
-    print(f"Number of bears {num_of_bears}")
+    print(animals)
+    print(f"Number of animals: {len(animals)}")
+    print('\n')
 
-# ecosystem(10000)
+# ecosystem(10)
 
-for i in range(100):
-    print(f'{i} ----------------------------------START-------------------------------')
-    ecosystem(10)
+# for i in range(100):
+#     print(f'{i} ----------------------------------START-------------------------------')
+#     ecosystem(10)
 
